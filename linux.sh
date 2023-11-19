@@ -62,8 +62,8 @@ threads=$(ps -eLf | wc -l)
 system_uptime=$(uptime -p)
 
 # Print Static CPU Information to Screen
-echo ""
-echo -e "${yellow}Static CPU Information:${reset}"
+# echo -e "${yellow}Static CPU Information:${reset}"
+echo -e "Static CPU Information:"
 echo "-------------------"
 
 printf "CPU Type: %s\n" "$cpu_type"
@@ -82,7 +82,8 @@ printf "%s\n" "$l3_cache"
 
 # Print Semi-Static Memory Information to Screen
 echo ""
-echo -e "${yellow}Dynamic CPU Information:${reset}"
+# echo -e "${yellow}Dynamic CPU Information:${reset}"
+echo -e "Dynamic CPU Information:"
 echo "-------------------"
 
 # Print the CPU information
@@ -91,7 +92,8 @@ printf "Current Number of Processes: $processes\n"
 printf "Current Number of Threads: $threads\n"
 
 echo ""
-printf "${yellow}System Uptime: $system_uptime${reset}\n"
+# printf "${yellow}System Uptime: $system_uptime${reset}\n"
+printf "System Uptime: $system_uptime\n"
 
 ######---------------------------------RAM------------------------------------########
 
@@ -139,7 +141,8 @@ paged_pool_memory_human=$(human_readable_size $paged_pool_memory)
 
 # Print Semi-Static Memory Information to Screen
 echo ""
-echo -e "${yellow}Semi-Static Memory Information:${reset}"
+# echo -e "${yellow}Semi-Static Memory Information:${reset}"
+echo -e "Semi-Static Memory Information:"
 echo "-------------------"
 
 printf "Total Physical Memory (RAM): %s\n" "$total_physical_memory"
@@ -151,7 +154,8 @@ printf "HDD Space Available: %s\n" "$hdd_space_available"
 
 # Print Dynamic Memory Information to Screen
 echo ""
-echo -e "${yellow}Dynamic Memory Information:${reset}"
+# echo -e "${yellow}Dynamic Memory Information:${reset}"
+echo -e "Dynamic Memory Information:"
 echo "-------------------"
 
 printf "Used Memory (RAM): %s\n" "$used_memory"
@@ -160,7 +164,8 @@ printf "\n"
 
 # Print list of top 10 running processes by memory utilization
 process_list=$(ps aux --sort=-%mem | head -n 11)
-echo -e "${yellow}List of Top 10 Processes by Memory Utilization:${reset}"
+# echo -e "${yellow}List of Top 10 Processes by Memory Utilization:${reset}"
+echo -e "List of Top 10 Processes by Memory Utilization:"
 echo "---------------------------------------------"
 echo "$process_list" | awk 'NR>1 {
     mem = $4;
@@ -197,7 +202,8 @@ if lspci -nnk | grep -i -E 'vga|3d controller' &> /dev/null; then
 
 # Print GPU Memory Information
 echo ""
-echo -e "${yellow}GPU Memory Information:${reset}"
+# echo -e "${yellow}GPU Memory Information:${reset}"
+echo -e "GPU Memory Information:"
 echo "-------------------"
 
 printf "GPU Name: %s\n" "$gpu_name"
@@ -239,7 +245,8 @@ average_throughput=$((($rx_bytes_end + $tx_bytes_end - $rx_bytes_start - $tx_byt
 
 # Print Network Interface Information
 echo ""
-echo -e "${yellow}Network Interface Information:${reset}"
+# echo -e "${yellow}Network Interface Information:${reset}"
+echo -e "Network Interface Information:"
 echo "-------------------"
 
 # Print network interface information
@@ -277,7 +284,8 @@ average_jitter=$(calculate_average "${jitters[@]}")
 
 # Print Network Performance Metrics Information
 echo ""
-echo -e "${yellow}Network Performance Metrics:${reset}"
+# echo -e "${yellow}Network Performance Metrics:${reset}"
+echo -e "Network Performance Metrics:"
 echo "-------------------"
 
 printf "Average Latency: %s ms\n" "$average_latency"
@@ -320,7 +328,8 @@ timezone=$(timedatectl | grep "Time zone" | awk '{print $3}')
 
 # Print Operating Systems Information
 echo ""
-echo -e "${yellow}Operating System (OS) Info:${reset}"
+# echo -e "${yellow}Operating System (OS) Info:${reset}"
+echo -e "Operating System (OS) Info:"
 echo "-------------------"
 
 printf "OS Name: %s\n" "$os_name"
@@ -340,7 +349,8 @@ printf "Timezone: %s\n" "$timezone"
 
 # Print Battery/Power Information
 echo ""
-echo -e "${yellow}Battery/Power Info:${reset}"
+# echo -e "${yellow}Battery/Power Info:${reset}"
+echo -e "Battery/Power Info:"
 echo "-------------------"
 
 # Check if it's a laptop
@@ -360,7 +370,7 @@ if [ -e "/sys/class/power_supply/BAT0" ]; then
     printf "Charging: %s\n" "$charging"
 else
     # It's a desktop computer
-    echo "This is a desktop computer"
+    printf "Battery Level: This is a desktop computer"
 fi
 
 #---------------------------------------------------------------------------------------------------#

@@ -1,7 +1,5 @@
+######------------------------------------------------Script Begins----------------------------------------------------######
 ######------------------------------------------------CPU----------------------------------------------------######
-Write-Host ""
-Write-Host ""
-
 # Static Info
 $staticInfo = Get-CimInstance Win32_Processor
 
@@ -121,8 +119,9 @@ foreach ($pool in $memoryPools) {
 }
 Write-Host ""
 
-# Memory Usage by Processes
-$processes = Get-Process | Select-Object -Property ProcessName, WorkingSet, PrivateMemorySize
+# Memory Usage by Processes - Top 15
+$processes = Get-Process | Sort-Object -Property WorkingSet -Descending | Select-Object -First 15 -Property ProcessName, WorkingSet, PrivateMemorySize
+
 foreach ($process in $processes) {
     $workingSetMB = [math]::Round($process.WorkingSet / 1MB, 2)
     $privateMemorySizeMB = [math]::Round($process.PrivateMemorySize / 1MB, 2)
@@ -160,6 +159,7 @@ foreach ($gpu in $gpuInfo) {
     $AveragePower = $gpu.'power.draw.average [W]'
     
     Write-Host "GPU Information:" -ForegroundColor Yellow
+    Write-Host "------------------------"
     Write-Host "GPU Name: $name"
     Write-Host "Driver Version: $driverVersion"
     Write-Host "Temperature: $temperature C"
@@ -181,6 +181,7 @@ $gpu_running_processes = nvidia-smi --query-compute-apps=pid,name,used_memory --
 
 # Split the CSV output into lines and iterate through each line
 Write-Host "GPU Running Processes:" -ForegroundColor Yellow
+Write-Host "------------------------"
 $gpu_running_processes | ForEach-Object {
     # Split the line into columns using commas as the delimiter
     $columns = $_.Split(',')
@@ -215,10 +216,6 @@ if ($networkInterface) {
         $ssid = (Get-NetConnectionProfile -InterfaceAlias $networkInterface.Name).Name
     }
 
-    # DNS Name (Primary DNS Server)
-    $dnsServer = Get-DnsClientServerAddress | Where-Object { $_.AddressFamily -eq 'IPv4' -and $_.QuerySource -eq 'Primary' }
-    $dnsName = if ($dnsServer) { $dnsServer.ServerAddresses[0] } else { 'N/A' }
-
     # Connection Type
     $connectionType = $networkInterface.MediaConnectionState
 
@@ -234,6 +231,7 @@ if ($networkInterface) {
     # Display Network Information
     Write-Host ""
     Write-Host "Current Network Interface Information:" -ForegroundColor Yellow
+    Write-Host "------------------------"
     Write-Host "Network Type (Adapter Name): $networkType"
     Write-Host "Device Type: $deviceType"
     Write-Host "SSID: $ssid"
@@ -254,7 +252,7 @@ $targetHost = "example.com"
 $pingCount = 10
 
 # Specify the size of each ping packet (in bytes)
-$packetSize = 700  # Adjust this to the desired packet size
+$packetSize = 500  # Adjust this to the desired packet size
 
 # Perform a series of ping tests
 $pingResults = Test-Connection -ComputerName $targetHost -Count $pingCount -BufferSize $packetSize
@@ -274,6 +272,7 @@ $jitter = [math]::Sqrt($latencyVariance)
 
 # Display the results
 Write-Host "Network Performance Metrics:" -ForegroundColor Yellow
+Write-Host "------------------------"
 Write-Host "Ping to $($targetHost) with packet size of $($packetSize) bytes:"
 Write-Host "  - Average Latency: $averageLatency ms"
 Write-Host "  - Jitter: $jitter ms"
@@ -305,6 +304,7 @@ $encryptionLevel = $osInfo.OsEncryptionLevel
 
 # Display OS Information
 Write-Host "Operating System Info:" -ForegroundColor Yellow
+Write-Host "------------------------"
 Write-Host "OS Name: $osName"
 Write-Host "OS Version: $osVersion"
 Write-Host "OS Local Time: $localTime"
@@ -327,6 +327,7 @@ Write-Host ""
 
 # Check if the computer is a laptop or desktop
 Write-Host "Power/Battery Info:" -ForegroundColor Yellow
+Write-Host "------------------------"
 $computerSystem = Get-WmiObject -Class Win32_ComputerSystem
 $isLaptop = $computerSystem.PCSystemType -eq 2
 
@@ -356,3 +357,5 @@ if ($isLaptop) {
     # Display message for desktop computers
     Write-Host "This is a desktop computer."
 }
+
+######------------------------------------------------Script Ends----------------------------------------------------######
