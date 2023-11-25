@@ -131,10 +131,13 @@ Write-Host ""
 
 
 ######------------------------------------------------GPU----------------------------------------------------######
-# Check if a GPU is present
-$gpuCount = (Get-WmiObject -Class Win32_VideoController).Count
+# Check if an NVIDIA GPU is present using nvidia-smi
+$nvidiaSmiOutput = nvidia-smi 2>&1
 
-if ($gpuCount -eq $null -or $gpuCount.Count -eq 0) {
+# Check if a GPU is present
+# $gpuCount = (Get-WmiObject -Class Win32_VideoController).Count
+
+if ($LASTEXITCODE -eq 0 -and $nvidiaSmiOutput -match 'No devices were found') {
     Write-Host "System has no GPU. Skipping GPU information." -ForegroundColor Yellow
 } else {
 
@@ -355,7 +358,7 @@ if ($isLaptop) {
     }
 } else {
     # Display message for desktop computers
-    Write-Host "This is a desktop computer."
+    Write-Host "Battery Level: This is a desktop computer."
 }
 
 ######------------------------------------------------Script Ends----------------------------------------------------######
