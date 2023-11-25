@@ -134,7 +134,7 @@ Write-Host ""
 # Check if a GPU is present
 $gpuCount = (Get-WmiObject -Class Win32_VideoController).Count
 
-if ($videoControllers -eq $null -or $videoControllers.Count -eq 0) {
+if ($gpuCount -eq $null -or $gpuCount.Count -eq 0) {
     Write-Host "System has no GPU. Skipping GPU information." -ForegroundColor Yellow
 } else {
 
