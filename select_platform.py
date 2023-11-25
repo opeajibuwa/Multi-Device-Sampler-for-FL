@@ -3,6 +3,13 @@ import subprocess
 import re
 import json
 import time
+import shutil
+
+
+
+def has_nvidia_gpu():
+    # Use shutil.which to check if the nvidia-smi executable is in the PATH
+    return shutil.which('nvidia-smi') is not None
 
 
 def convert_json_windows(filename):
@@ -13,19 +20,33 @@ def convert_json_windows(filename):
     with open(input_file_path, 'r') as file:
         txt_content = file.read()
 
-    # Define regex patterns to extract sections
-    section_patterns = {
-        'Static CPU Information': 'Static CPU Information:(.*?)Dynamic CPU Information:',
-        'Dynamic CPU Information': 'Dynamic CPU Information:(.*?)Semi-Static Memory Information:',
-        'Semi-Static Memory Information': 'Semi-Static Memory Information:(.*?)Dynamic Memory Information:',
-        'Dynamic Memory Information': 'Dynamic Memory Information:(.*?)GPU Information:',
-        'GPU Information': 'GPU Information:(.*?)GPU Running Processes:',
-        'GPU Running Processes': 'GPU Running Processes:(.*?)Current Network Interface Information:',
-        'Current Network Interface Information': 'Current Network Interface Information:(.*?)Network Performance Metrics:',
-        'Network Performance Metrics': 'Network Performance Metrics:(.*?)Operating System Info:',
-        'Operating System Info': 'Operating System Info:(.*?)Power/Battery Info:',
-        'Power/Battery Info': 'Power/Battery Info:(.*?)$'
-    }
+    if has_nvidia_gpu():
+        # Define regex patterns to extract sections
+        section_patterns = {
+            'Static CPU Information': 'Static CPU Information:(.*?)Dynamic CPU Information:',
+            'Dynamic CPU Information': 'Dynamic CPU Information:(.*?)Semi-Static Memory Information:',
+            'Semi-Static Memory Information': 'Semi-Static Memory Information:(.*?)Dynamic Memory Information:',
+            'Dynamic Memory Information': 'Dynamic Memory Information:(.*?)GPU Information:',
+            'GPU Information': 'GPU Information:(.*?)GPU Running Processes:',
+            'GPU Running Processes': 'GPU Running Processes:(.*?)Current Network Interface Information:',
+            'Current Network Interface Information': 'Current Network Interface Information:(.*?)Network Performance Metrics:',
+            'Network Performance Metrics': 'Network Performance Metrics:(.*?)Operating System Info:',
+            'Operating System Info': 'Operating System Info:(.*?)Power/Battery Info:',
+            'Power/Battery Info': 'Power/Battery Info:(.*?)$'
+        }
+    
+    else:
+        section_patterns = {
+            'Static CPU Information': 'Static CPU Information:(.*?)Dynamic CPU Information:',
+            'Dynamic CPU Information': 'Dynamic CPU Information:(.*?)Semi-Static Memory Information:',
+            'Semi-Static Memory Information': 'Semi-Static Memory Information:(.*?)Dynamic Memory Information:',
+            'Dynamic Memory Information': 'Dynamic Memory Information:(.*?)Current Network Interface Information:',
+            'Current Network Interface Information': 'Current Network Interface Information:(.*?)Network Performance Metrics:',
+            'Network Performance Metrics': 'Network Performance Metrics:(.*?)Operating System Info:',
+            'Operating System Info': 'Operating System Info:(.*?)Power/Battery Info:',
+            'Power/Battery Info': 'Power/Battery Info:(.*?)$'
+        }
+    
 
     # Initialize an empty dictionary to store the extracted data
     data = {}
@@ -71,25 +92,41 @@ def convert_json_linux(filename):
     with open(input_file_path_linux, 'r') as file_linux:
         linux_content = file_linux.read()
 
-    # Define regex patterns to extract sections (Linux)
-    section_patterns_linux = {
+    if has_nvidia_gpu():
+        # Define regex patterns to extract sections
+        section_patterns = {
         'Static CPU Information': 'Static CPU Information:(.*?)Dynamic CPU Information:',
         'Dynamic CPU Information': 'Dynamic CPU Information:(.*?)Semi-Static Memory Information:',
         'Semi-Static Memory Information': 'Semi-Static Memory Information:(.*?)Dynamic Memory Information:',
         'Dynamic Memory Information': 'Dynamic Memory Information:(.*?)List of Top 10 Processes by Memory Utilization:',
-        'List of Top 10 Processes by Memory Utilization': 'List of Top 10 Processes by Memory Utilization:(.*?)GPU Memory Information:',
-        'GPU Memory Information': 'GPU Memory Information:(.*?)Network Interface Information:',
+        'List of Top 10 Processes by Memory Utilization': 'List of Top 10 Processes by Memory Utilization:(.*?)GPU Information:',
+        'GPU Information': 'GPU Information:(.*?)Network Interface Information:',
         'Network Interface Information': 'Network Interface Information:(.*?)Network Performance Metrics:',
         'Network Performance Metrics': 'Network Performance Metrics:(.*?)Operating System \(OS\) Info:',
         'Operating System (OS) Info': 'Operating System \(OS\) Info:(.*?)Battery/Power Info:',
         'Battery/Power Info': 'Battery/Power Info:(.*?)(?:$|$)',
-    }
+        }
+    
+    else:
+        section_patterns = {
+        'Static CPU Information': 'Static CPU Information:(.*?)Dynamic CPU Information:',
+        'Dynamic CPU Information': 'Dynamic CPU Information:(.*?)Semi-Static Memory Information:',
+        'Semi-Static Memory Information': 'Semi-Static Memory Information:(.*?)Dynamic Memory Information:',
+        'Dynamic Memory Information': 'Dynamic Memory Information:(.*?)List of Top 10 Processes by Memory Utilization:',
+        'List of Top 10 Processes by Memory Utilization': 'List of Top 10 Processes by Memory Utilization:(.*?)GPU Information:',
+        'GPU Information': 'GPU Information:(.*?)Network Interface Information:',
+        'Network Interface Information': 'Network Interface Information:(.*?)Network Performance Metrics:',
+        'Network Performance Metrics': 'Network Performance Metrics:(.*?)Operating System \(OS\) Info:',
+        'Operating System (OS) Info': 'Operating System \(OS\) Info:(.*?)Battery/Power Info:',
+        'Battery/Power Info': 'Battery/Power Info:(.*?)(?:$|$)',
+        }
+        
 
     # Initialize an empty dictionary to store the extracted data (Linux)
     data_linux = {}
 
     # Iterate through each section and extract information (Linux)
-    for section_name, pattern in section_patterns_linux.items():
+    for section_name, pattern in section_patterns.items():
         match = re.search(pattern, linux_content, re.DOTALL)
         
         # Check if a match is found

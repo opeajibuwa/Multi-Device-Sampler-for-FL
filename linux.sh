@@ -200,10 +200,10 @@ if lspci -nnk | grep -i -E 'vga|3d controller' &> /dev/null; then
 
 
 
-# Print GPU Memory Information
+# Print GPU Information
 echo ""
-# echo -e "${yellow}GPU Memory Information:${reset}"
-echo -e "GPU Memory Information:"
+# echo -e "${yellow}GPU Information:${reset}"
+echo -e "GPU Information:"
 echo "-------------------"
 
 printf "GPU Name: %s\n" "$gpu_name"
